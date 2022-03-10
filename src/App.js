@@ -8,7 +8,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import PostPage from "./pages/PostsPage/PostPage";
 import loginReducer from "./services/reducers/loginReducer";
-import useLogin from "./services/customHooks/useLogin";
 
 export const AuthContext = React.createContext();
 const initialState = { isAuthenticated: false, userId: null, token: null };
