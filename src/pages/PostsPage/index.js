@@ -7,10 +7,12 @@ import "./index.css";
 
 function PostsPage() {
   const defaultPostsData = [{ id: 0, title: "" }];
+  const defaultTableState = { idSortState: "", titleSortState: "" };
   const [postsData, setPostsData] = useState(defaultPostsData);
   const [ogData, setOgData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [tableState, setTableState] = useState(defaultTableState);
   const { state } = useContext(AuthContext);
 
   function fetchAllData(token, signal) {
@@ -45,6 +47,54 @@ function PostsPage() {
       }
     }
     setPostsData([...postsData]);
+  }
+
+  function sortTitle() {
+    let sortState = tableState.titleSortState;
+    if (sortState === "ASC") sortState = "DESC";
+    else sortState = "ASC";
+    setTableState({
+      ...tableState,
+      idSortState: "",
+      titleSortState: sortState,
+    });
+
+    switch (sortState) {
+      case "ASC":
+        postsData.sort((a, b) => (a.title > b.title ? 1 : -1));
+        break;
+      case "DESC":
+        postsData.sort((a, b) => (a.title < b.title ? 1 : -1));
+        break;
+      default:
+        postsData = ogData;
+        break;
+    }
+    setPostsData(postsData);
+  }
+
+  function sortID() {
+    let sortState = tableState.idSortState;
+    if (sortState === "ASC") sortState = "DESC";
+    else sortState = "ASC";
+    setTableState({
+      ...tableState,
+      titleSortState: "",
+      idSortState: sortState,
+    });
+
+    switch (sortState) {
+      case "ASC":
+        postsData.sort((a, b) => (a.id > b.id ? 1 : -1));
+        break;
+      case "DESC":
+        postsData.sort((a, b) => (a.id < b.id ? 1 : -1));
+        break;
+      default:
+        postsData = ogData;
+        break;
+    }
+    setPostsData(postsData);
   }
 
   function handleSearch(event) {
@@ -84,8 +134,18 @@ function PostsPage() {
             <Table striped bordered hover>
               <thead>
                 <tr>
-                  <th>ID</th>
-                  <th>Title</th>
+                  <th onClick={sortID}>
+                    ID
+                    {tableState.idSortState !== ""
+                      ? "(" + tableState.idSortState + ")"
+                      : ""}
+                  </th>
+                  <th onClick={sortTitle}>
+                    Title
+                    {tableState.titleSortState !== ""
+                      ? "(" + tableState.titleSortState + ")"
+                      : ""}
+                  </th>
                   <th>Actions</th>
                 </tr>
               </thead>

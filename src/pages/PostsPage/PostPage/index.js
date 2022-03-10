@@ -44,7 +44,7 @@ function PostPage() {
       isSubscribed = false;
       controller.abort();
     };
-  }, [params]);
+  }, []);
 
   useLogin();
 
