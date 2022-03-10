@@ -1,3 +1,7 @@
 .LoginPage {
   margin-top: 1em;
 }
+
+.loginStatus {
+  margin: 1em 1em 1em 2em;
+}

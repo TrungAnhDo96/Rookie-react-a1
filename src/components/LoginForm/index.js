@@ -140,12 +140,9 @@ function LoginForm() {
       ) : data.errorMessage !== null ? (
         <p>Error logging in: {data.errorMessage}</p>
       ) : (
-        <div className="loggedIn">
-          <p>You have logged in</p>
-          <Button variant="danger" onClick={handleLogout}>
-            Logout
-          </Button>
-        </div>
+        <Button variant="danger" onClick={handleLogout}>
+          Logout
+        </Button>
       )}
     </div>
   );
