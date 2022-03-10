@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Spinner } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../../../App";
+import useLogin from "../../../services/customHooks/useLogin";
 
 function PostPage() {
   const params = useParams();
@@ -11,7 +12,7 @@ function PostPage() {
   const [error, setError] = useState(null);
   const { state } = useContext(AuthContext);
 
-  function FetchPostData(id, token, signal) {
+  function fetchPostData(id, token, signal) {
     fetch("https://jsonplaceholder.typicode.com/posts/" + id, {
       method: "GET",
       signal: signal,
@@ -38,16 +39,14 @@ function PostPage() {
   useEffect(() => {
     let isSubscribed = true;
     const controller = new AbortController();
-    FetchPostData(
-      params.id,
-      state.token !== null ? "" : state.token,
-      controller.signal
-    );
+    fetchPostData(params.id, state.token, controller.signal);
     return () => {
       isSubscribed = false;
       controller.abort();
     };
   }, [params]);
+
+  useLogin();
 
   return (
     <div className="PostsPage">

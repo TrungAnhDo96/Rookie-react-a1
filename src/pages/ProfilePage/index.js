@@ -13,8 +13,6 @@ function ProfilePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useLogin();
-
   function getUser(token, cancelSignal) {
     setIsLoading(true);
     fetch("https://60dff0ba6b689e001788c858.mockapi.io/users/" + state.userId, {
@@ -51,6 +49,8 @@ function ProfilePage() {
       cancelController.abort();
     };
   }, []);
+
+  useLogin();
 
   return (
     <div className="ProfilePage">

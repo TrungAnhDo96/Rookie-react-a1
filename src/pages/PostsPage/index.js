@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Table, Spinner, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../App";
+import useLogin from "../../services/customHooks/useLogin";
 import "./index.css";
 
 function PostsPage() {
@@ -56,13 +57,15 @@ function PostsPage() {
     let isSubscribed = true;
     const controller = new AbortController();
     if (ogData.length === 0) {
-      fetchAllData(state.token !== null ? "" : state.token, controller.signal);
+      fetchAllData(state.token, controller.signal);
     }
     return () => {
       isSubscribed = false;
       controller.abort();
     };
   }, [postsData]);
+
+  useLogin();
 
   return (
     <div className="PostsPage">

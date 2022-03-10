@@ -1,7 +1,10 @@
 import React from "react";
+import useLogin from "../../services/customHooks/useLogin";
 import "./index.css";
 
 function HomePage() {
+  useLogin();
+
   return (
     <div className="HomePage">
       <p className="big-bold-NewRoman-text">
