@@ -10,10 +10,9 @@ function LoginForm() {
     password: "",
     isValidated: false,
     isSubmitting: false,
-    isSubmitted: false,
     errorMessage: null,
   };
-  const { dispatch } = React.useContext(AuthContext);
+  const { state, dispatch } = React.useContext(AuthContext);
   const [data, setData] = useState(initialState);
   const [isToBeRemembered, setIsToBeRemembered] = useState(false);
 
@@ -22,7 +21,7 @@ function LoginForm() {
     return true;
   }
 
-  function handleRememberMe(event) {
+  function handleRememberMe() {
     setIsToBeRemembered(!isToBeRemembered);
     console.log(isToBeRemembered);
   }
@@ -31,7 +30,7 @@ function LoginForm() {
     setData({ ...data, [event.target.name]: event.target.value });
   }
 
-  function handleLogout(event) {
+  function handleLogout() {
     dispatch({
       type: "LOGOUT",
       payload: null,
@@ -58,7 +57,7 @@ function LoginForm() {
           type: "LOGIN_SESSION",
           payload: result,
         });
-        setData({ ...data, isSubmitted: true });
+        setData({ ...data, isSubmitting: false });
       })
       .catch((e) => {
         setData({ ...data, isSubmitting: false, errorMessage: e });
@@ -67,7 +66,7 @@ function LoginForm() {
 
   return (
     <div className="loginForm">
-      {data.isSubmitted === false ? (
+      {state.isAuthenticated === false ? (
         data.isSubmitting === false ? (
           <Form noValidate validated={data.validated} onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="loginFormEmail">
@@ -112,7 +111,7 @@ function LoginForm() {
         <p>Error logging in: {data.errorMessage}</p>
       ) : (
         <div className="loggedIn">
-          <p>You have logged in as {data.email}</p>
+          <p>You have logged in</p>
           <Button variant="danger" onClick={handleLogout}>
             Logout
           </Button>
