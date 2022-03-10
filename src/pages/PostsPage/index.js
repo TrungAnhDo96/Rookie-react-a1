@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Table, Spinner, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../App";
 import "./index.css";
 
 function PostsPage() {
@@ -9,17 +10,21 @@ function PostsPage() {
   const [ogData, setOgData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const { state } = useContext(AuthContext);
 
-  function fetchAllData(isSubscribed, signal) {
-    let subscribed = isSubscribed;
-    fetch("https://jsonplaceholder.typicode.com/posts", { signal: signal })
+  function fetchAllData(token, signal) {
+    fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "GET",
+      signal: signal,
+      headers: new Headers({
+        Authorization: token,
+      }),
+    })
       .then((response) => {
-        if (subscribed) {
-          if (response.ok) {
-            return response.json();
-          }
-          throw response;
+        if (response.ok) {
+          return response.json();
         }
+        throw response;
       })
       .then((data) => {
         setPostsData(data);
@@ -51,7 +56,7 @@ function PostsPage() {
     let isSubscribed = true;
     const controller = new AbortController();
     if (ogData.length === 0) {
-      fetchAllData(isSubscribed, controller.signal);
+      fetchAllData(state.token !== null ? "" : state.token, controller.signal);
     }
     return () => {
       isSubscribed = false;

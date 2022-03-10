@@ -16,6 +16,7 @@ function ProfilePage() {
   useLogin();
 
   function getUser(token, cancelSignal) {
+    setIsLoading(true);
     fetch("https://60dff0ba6b689e001788c858.mockapi.io/users/" + state.userId, {
       method: "GET",
       signal: cancelSignal,

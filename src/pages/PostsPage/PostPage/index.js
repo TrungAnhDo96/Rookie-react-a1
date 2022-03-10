@@ -1,26 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Spinner } from "react-bootstrap";
 import { useParams } from "react-router-dom";
+import { AuthContext } from "../../../App";
 
 function PostPage() {
   const params = useParams();
   const defaultPostData = { id: 0, title: "", body: "" };
   const [postData, setPostData] = useState(defaultPostData);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
+  const { state } = useContext(AuthContext);
 
-  function FetchPostData(id, isSubscribed, signal) {
-    let subscribed = isSubscribed;
+  function FetchPostData(id, token, signal) {
     fetch("https://jsonplaceholder.typicode.com/posts/" + id, {
+      method: "GET",
       signal: signal,
+      headers: new Headers({
+        Authorization: token,
+      }),
     })
       .then((response) => {
-        if (subscribed) {
-          if (response.ok) {
-            return response.json();
-          }
-          throw response;
+        if (response.ok) {
+          return response.json();
         }
+        throw response;
       })
       .then((data) => {
         setPostData(data);
@@ -35,7 +38,11 @@ function PostPage() {
   useEffect(() => {
     let isSubscribed = true;
     const controller = new AbortController();
-    FetchPostData(params.id, isSubscribed, controller.signal);
+    FetchPostData(
+      params.id,
+      state.token !== null ? "" : state.token,
+      controller.signal
+    );
     return () => {
       isSubscribed = false;
       controller.abort();
@@ -45,7 +52,7 @@ function PostPage() {
   return (
     <div className="PostsPage">
       {isLoading === false ? (
-        error !== "" ? (
+        error !== null ? (
           <p>Error loading posts: {error}</p>
         ) : (
           <div className="postDetail">
