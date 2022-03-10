@@ -16,13 +16,32 @@ function Login() {
     errorMessage: null,
   };
   const { state, dispatch } = React.useContext(AuthContext);
-  const [detail, setDetails] = useState(initialLoginDetails);
+  const [details, setDetails] = useState(initialLoginDetails);
+  const [validationError, setValidationError] = useState({});
   const [data, setData] = useState(initialState);
   const [isToBeRemembered, setIsToBeRemembered] = useState(false);
 
-  function checkValidity(form) {
-    console.log(form);
-    return true;
+  function checkValidity() {
+    const validEmailRegEx = new RegExp(
+      "^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$"
+    );
+    const errors = {};
+    if (details.email === "") {
+      errors.email = "Please enter email address";
+    } else if (!validEmailRegEx.test(details.email)) {
+      errors.email = "Please enter valid email address";
+    }
+    if (details.password === "") {
+      errors.password = "Please enter password";
+    } else if (details.password.length <= 8 && details.password.length > 0) {
+      errors.password = "Please enter password longer than 8 characters";
+    }
+
+    setValidationError(errors);
+
+    if (Object.keys(errors).length > 0) {
+      return false;
+    } else return true;
   }
 
   function handleRememberMe() {
@@ -31,7 +50,7 @@ function Login() {
   }
 
   function handleInputChange(event) {
-    setDetails({ ...detail, [event.target.name]: event.target.value });
+    setDetails({ ...details, [event.target.name]: event.target.value });
   }
 
   function handleLogout() {
@@ -47,7 +66,9 @@ function Login() {
       ...data,
       isSubmitting: true,
     });
-    fetch("https://60dff0ba6b689e001788c858.mockapi.io/tokens")
+    fetch("https://60dff0ba6b689e001788c858.mockapi.io/tokens", {
+      method: "GET",
+    })
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -74,11 +95,13 @@ function Login() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    setData({
-      ...data,
-      isValidated: checkValidity(event.currentTarget),
-    });
-    handleLogin();
+    if (checkValidity()) {
+      setData({
+        ...data,
+        isValidated: true,
+      });
+      handleLogin();
+    }
   }
 
   useEffect(() => {
@@ -110,9 +133,10 @@ function Login() {
                   name="email"
                   placeholder="Email"
                   onChange={handleInputChange}
+                  isInvalid={!!validationError.email}
                 />
                 <Form.Control.Feedback type="invalid">
-                  Please enter valid email
+                  {validationError.email}
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-3" controlId="loginFormPassword">
@@ -121,9 +145,10 @@ function Login() {
                   name="password"
                   placeholder="Password"
                   onChange={handleInputChange}
+                  isInvalid={!!validationError.password}
                 />
                 <Form.Control.Feedback type="invalid">
-                  Please choose a username.
+                  {validationError.password}
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Group className="mb-3" controlId="loginRemember">
