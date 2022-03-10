@@ -105,7 +105,6 @@ function Login() {
   }
 
   useEffect(() => {
-    let isSubscribed = true;
     const localUserId = localStorage.getItem("userId");
     const localToken = localStorage.getItem("token");
     if (localToken !== null && data.isLoaded === false) {
@@ -116,9 +115,6 @@ function Login() {
       });
     }
     setData({ ...data, isLoaded: true });
-    return () => {
-      isSubscribed = false;
-    };
   }, []);
 
   return (

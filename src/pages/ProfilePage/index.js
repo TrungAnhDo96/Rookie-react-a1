@@ -39,13 +39,11 @@ function ProfilePage() {
   }
 
   useEffect(() => {
-    let isSubscribed = true;
     const cancelController = new AbortController();
     if (state.isAuthenticated === true) {
       getUser(state.token, cancelController.signal);
     }
     return () => {
-      isSubscribed = false;
       cancelController.abort();
     };
   }, []);

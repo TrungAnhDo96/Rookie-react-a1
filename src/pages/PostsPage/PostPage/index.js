@@ -37,11 +37,9 @@ function PostPage() {
   }
 
   useEffect(() => {
-    let isSubscribed = true;
     const controller = new AbortController();
     fetchPostData(params.id, state.token, controller.signal);
     return () => {
-      isSubscribed = false;
       controller.abort();
     };
   }, []);

@@ -104,13 +104,11 @@ function PostsPage() {
   }
 
   useEffect(() => {
-    let isSubscribed = true;
     const controller = new AbortController();
     if (ogData.length === 0) {
       fetchAllData(state.token, controller.signal);
     }
     return () => {
-      isSubscribed = false;
       controller.abort();
     };
   }, [postsData]);

@@ -4,7 +4,6 @@ import { AuthContext } from "../../App";
 const useLogin = () => {
   const { dispatch } = React.useContext(AuthContext);
   useEffect(() => {
-    let isSubscribed = true;
     const sessionUserId = sessionStorage.getItem("userId");
     const sessionToken = sessionStorage.getItem("token");
     if (sessionToken !== null) {
@@ -13,9 +12,6 @@ const useLogin = () => {
         payload: { userId: sessionUserId, token: sessionToken },
       });
     }
-    return () => {
-      isSubscribed = false;
-    };
   }, []);
 };
 
