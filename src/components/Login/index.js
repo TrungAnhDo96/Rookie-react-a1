@@ -4,7 +4,7 @@ import { Form, Button, Spinner } from "react-bootstrap";
 import { AuthContext } from "../../App";
 import "./index.css";
 
-function LoginForm() {
+function Login() {
   const initialLoginDetails = {
     email: "",
     password: "",
@@ -82,6 +82,7 @@ function LoginForm() {
   }
 
   useEffect(() => {
+    let isSubscribed = true;
     const localUserId = localStorage.getItem("userId");
     const localToken = localStorage.getItem("token");
     if (localToken !== null && data.isLoaded === false) {
@@ -92,46 +93,51 @@ function LoginForm() {
       });
     }
     setData({ ...data, isLoaded: true });
+    return () => {
+      isSubscribed = false;
+    };
   }, []);
 
   return (
-    <div className="loginForm">
+    <div className="Login">
       {state.isAuthenticated === false ? (
         data.isSubmitting === false ? (
-          <Form noValidate validated={data.validated} onSubmit={handleSubmit}>
-            <Form.Group className="mb-3" controlId="loginFormEmail">
-              <Form.Control
-                type="email"
-                name="email"
-                placeholder="Email"
-                onChange={handleInputChange}
-              />
-              <Form.Control.Feedback type="invalid">
-                Please enter valid email
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="loginFormPassword">
-              <Form.Control
-                type="password"
-                name="password"
-                placeholder="Password"
-                onChange={handleInputChange}
-              />
-              <Form.Control.Feedback type="invalid">
-                Please choose a username.
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="loginRemember">
-              <Form.Check
-                type="checkbox"
-                label="Remember me"
-                onChange={handleRememberMe}
-              />
-            </Form.Group>
-            <Button variant="primary" type="submit">
-              Submit
-            </Button>
-          </Form>
+          <div className="loginForm">
+            <Form noValidate validated={data.validated} onSubmit={handleSubmit}>
+              <Form.Group className="mb-3" controlId="loginFormEmail">
+                <Form.Control
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  onChange={handleInputChange}
+                />
+                <Form.Control.Feedback type="invalid">
+                  Please enter valid email
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="loginFormPassword">
+                <Form.Control
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  onChange={handleInputChange}
+                />
+                <Form.Control.Feedback type="invalid">
+                  Please choose a username.
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="loginRemember">
+                <Form.Check
+                  type="checkbox"
+                  label="Remember me"
+                  onChange={handleRememberMe}
+                />
+              </Form.Group>
+              <Button variant="primary" type="submit">
+                Submit
+              </Button>
+            </Form>
+          </div>
         ) : (
           <Spinner animation="border" role="status">
             <span className="visually-hidden">Loading...</span>
@@ -148,4 +154,4 @@ function LoginForm() {
   );
 }
 
-export default LoginForm;
+export default Login;
